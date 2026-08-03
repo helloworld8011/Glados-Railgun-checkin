@@ -472,8 +472,18 @@ class Checker:
             points_str, points_num = api.get_points(cookie)
             result.points_total = points_str
 
-            # 4. 仅签到并累计积分；不自动兑换
-            result.exchange = "自动兑换已禁用"
+            # 4. 达到兑换门槛后自动兑换
+            required_points = self.config.EXCHANGE_PLANS.get(self.config.exchange_plan, 500)
+            if points_num >= required_points:
+                self._log(
+                    cookie_idx,
+                    domain,
+                    LogEmoji.EXCHANGE,
+                    f"积分已达 {points_num}，开始兑换 {self.config.exchange_plan} (需要 {required_points} 积分)",
+                )
+                result.exchange = api.exchange(cookie, self.config.exchange_plan, required_points)
+            else:
+                result.exchange = f"积分不足，暂不兑换 ({points_num}/{required_points})"
 
         return result
 
