@@ -3,8 +3,8 @@ name: GLaDOS daily check-in
 on:
   workflow_dispatch:
   schedule:
-    # 01:00 UTC = 09:00 Asia/Shanghai
-    - cron: "0 1 * * *"
+    # 01:00/09:00 UTC = 09:00/17:00 Asia/Shanghai
+    - cron: "0 1,9 * * *"
 
 permissions:
   contents: read
